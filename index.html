@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container my-5">
+        <input type="text" placeholder="Search books..." id="searchValue" />
+        <input type="button" value="👀" onclick="searchBooks()" />
+    </div>
+    <div class="container">
+        <div class="row" id="bookshelf">
+            
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <script>
+        async function searchBooks() {
+            const searchText = document.querySelector("#searchValue").value             // get the value from the input type text
+            const response = await fetch("https://striveschool-api.herokuapp.com/books?title=" + searchText)   // pass the parameter to the apis
+            const books = await response.json()
+
+            renderBooks(books)            
+        }
+
+
+        window.onload = async function () {
+            const response = await fetch("https://striveschool-api.herokuapp.com/books")  // GET (default) + URL
+            const books = await response.json()
+
+           renderBooks(books)
+        }
+
+        function renderBooks(books){
+            const bookshelf = document.querySelector("#bookshelf") // I need to take a reference to the row
+            bookshelf.innerHTML = ""
+            // for each book in my collection
+            for (let i = 0; i < books.length; i++){
+                const book = books[i]
+                bookshelf.innerHTML += `<div class="card col-sm-6 col-md-3 col-lg-2">
+                                            <img src="${book.img}" class="card-img-top" alt="${book.title + "picture"}>
+                                            <div class="card-body">
+                                            <h5 class="card-title">${book.title}</h5>
+                                            <p class="card-text"> <span class="badge bg-secondary">${book.category}</span> ${book.price}€</p>
+                                            </div>
+                                        </div>`
+            }
+        }
+
+                // window.onload = function () {
+        //     fetch("https://striveschool-api.herokuapp.com/books")   // GET (default) + URL
+        //         .then(response => response.json())
+        //         .then(books => {
+        //             // I need to take a reference to the row
+        //             const bookshelf = document.querySelector("#bookshelf")
+        //             // for each book in my collection
+        //             for (let i = 0; i < books.length; i++){
+        //                 const book = books[i]
+        //                 bookshelf.innerHTML += `<div class="card col-sm-6 col-md-3 col-lg-2">
+        //                                             <img src="${book.img}" class="card-img-top" alt="${book.title + "picture"}>
+        //                                             <div class="card-body">
+        //                                             <h5 class="card-title">${book.title}</h5>
+        //                                             <p class="card-text">${book.category} ${book.price}€</p>
+        //                                             </div>
+        //                                         </div>`
+        //             }
+        //         })
+        // }
+
+    </script>
+
+  </body>
+</html>
